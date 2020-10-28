@@ -77,10 +77,10 @@
   
   ;; PROJECT 1 Part D | Remove the comments and write test cases.
   (display "First Representation Tests\n")
-  (equal?? (create-a 2) '(even two)) ; should return '(even)
-  (equal?? (is-zero-a? '(even two)) #f) ; should return #f
-  (equal?? (is-zero-a? '(even)) #t) ; should return #t
-  (equal?? (successor-a '(even)) '(even two)) ; should return ?
+  (equal?? (create-a 2) '(even two))            ; should return '(even)
+  (equal?? (is-zero-a? '(even two)) #f)         ; should return #f
+  (equal?? (is-zero-a? '(even)) #t)             ; should return #t
+  (equal?? (successor-a '(even)) '(even two))   ; should return ?
   (newline)
 
   
