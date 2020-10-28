@@ -21,18 +21,9 @@
 
   ; 
   ; Second Grammar Definition:
-  ; Define even numbers as a list containing the elements of the representation in the hexadecimal format
   ;
-  ; [n] = () if n = 0
-  ; [n] = (a . [q]) if n = 16*q + r,
-  ;                    for 0<= r <10 a = r,
-  ;                    for r = 10 a = A,
-  ;                    for r = 11 a = B,
-  ;                    for r = 12 a = C,
-  ;                    for r = 13 a = D,
-  ;                    for r = 14 a = E,
-  ;                    for r = 15 a = F.
-  ; 
+  ;
+  ;
   ;
   ;
   ;; PROJECT 1 Part B
@@ -55,60 +46,14 @@
     )
 
   ;; Second Representation | We added a -b suffix so that both Unary and BigNum can be tested at once.
-
-  ;; number -> symbol | number
-  ;; returns the equivalent character of a number in hexadecimal system if number is greater than 9
-  ;; returns the number itself if it is smaller or equal to 9
-  (define find-char-equivalent
-    (lambda (n)
-      (cond ((eq? n 10) 'A)
-            ((eq? n 11) 'B)
-            ((eq? n 12) 'C)
-            ((eq? n 13) 'D)
-            ((eq? n 14) 'E)
-            ((eq? n 15) 'F)
-            (else n)
-            )))
-  
-  ;; symbol | number -> number
-  ;; returns the associated number of n in hexadecimal system if n is a symbol, otherwise returns the n itself
-  (define find-number-equivalent
-    (lambda (n)
-      (cond ((eq? n 'A) 10)
-            ((eq? n 'B) 11)
-            ((eq? n 'C) 12)
-            ((eq? n 'D) 13)
-            ((eq? n 'E) 14)
-            ((eq? n 'F) 15)
-            (else n)
-            )))
-  
   (define create-b
-    (lambda (n)
-      (cond ((eq? n 0) '())
-            ((< n 16) (list (find-char-equivalent n)))
-            (else (cons (find-char-equivalent (modulo n 16)) (create-b (truncate (/ n 16))))))))
+    ())
 
   (define is-zero-b?
-    (lambda (n)
-      (if (null? n)
-          #t
-          #f
-    )))
+    ())
 
-  ;; even-number -> even-number
-  ;; returns the even-number incremented by 1
-  (define increment-b
-    (lambda (n)
-      (cond ((null? n) (create-b 1))
-            ((< (find-number-equivalent (car n)) 15) (cons (find-char-equivalent (+ (find-number-equivalent (car n)) 1)) (cdr n)))
-            (else (cons 0 (increment-b (cdr n)))))))
-  
   (define successor-b
-    (lambda (n)
-      (increment-b (increment-b n))))
-            
-  
+    ())
 
   ;; PROJECT 1 Part C | Write your answer below here as a comment
   ;
@@ -140,10 +85,10 @@
 
   
   (display "Second Representation Tests\n")
-  (equal?? (create-b 480) '(0 E 1)) ; should return  '(0 E 1)
-  (equal?? (is-zero-b? '(0 2)) #f) ; should return #f
-  (equal?? (is-zero-b? '()) #t) ; should return #t
-  (equal?? (successor-b '(E F)) '(0 0 1)) ; should return '(E F)
+  ;(equal?? (create-b ) '()) ; should return ?
+  ;(equal?? (is-zero-b? '()) #f) ; should return #f
+  ;(equal?? (is-zero-b? '()) #t) ; should return #t
+  ;(equal?? (successor-b '()) '()) ; should return ?
   (newline)
   
 )
