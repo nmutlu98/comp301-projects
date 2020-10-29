@@ -51,7 +51,11 @@
     )
 
   (define successor-a
-    (lambda (n) (append n '(two)))
+    (lambda (n)
+      (if (null? n)
+          (create-a n)
+          (append n '(two)))
+      )
     )
 
   ;; Second Representation | We added a -b suffix so that both Unary and BigNum can be tested at once.
@@ -90,11 +94,8 @@
             (else (cons (find-char-equivalent (modulo n 16)) (create-b (truncate (/ n 16))))))))
 
   (define is-zero-b?
-    (lambda (n)
-      (if (null? n)
-          #t
-          #f
-    )))
+    (lambda (n) (null? n))
+    )
 
   ;; even-number -> even-number
   ;; returns the even-number incremented by 1
