@@ -29,7 +29,11 @@
     
     (expression
      ("let" identifier "=" expression "in" expression)
-     let-exp)   
+     let-exp)
+
+    (expression
+     ("op" "(" expression "," expression "," number ")")
+     op-exp)
     ))
 
 

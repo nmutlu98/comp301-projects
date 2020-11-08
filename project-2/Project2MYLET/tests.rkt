@@ -41,11 +41,11 @@
  (zero "0" 0)
  
 ; ;; check environment
-; (env-i "i" error)
+ (env-i "i" error)
 ; ;;; replace these with the values you defined
-; (env-x "x" 4)
-; (env-y "y" 2)
-; (env-z "z" 3)
+ (env-x "x" 1)
+ (env-y "y" 5)
+ (env-z "z" 10)
 ; 
 ; ;; simple unbound variables
 ; (test-unbound-var-1 "foo" error)
@@ -85,10 +85,10 @@
 ; (else-elif-basic "if zero?(3) then 3 elif zero?(4) then 4 elif zero?(1) then 1 else 2" 2)
 ;
 ; ;;; op exps
-; (op-test-sum "op(3, 2, 1)" 5)
-; (op-test-mult "op(3, 2, 2)" 6)
-; (op-test-div "op(3, 2, 3)" 3/2)
-; (op-test-diff "op(3, 2, 4)" 1)
+ (op-test-sum "op(3, 2, 1)" 5)
+ (op-test-mult "op(3, 2, 2)" 6)
+ (op-test-div "op(3, 2, 3)" 3/2)
+ (op-test-diff "op(3, 2, 4)" 1)
 ;
 ; ;;; complex tests combining op and if
 ; (elif-test "if zero?(op(3, 3, 1)) then op(3, 3, 1) elif zero?(op(3, 3, 2)) then op(3, 3, 2) elif zero?(op(3, 3, 4)) then op(3, 3, 4) else 3" 0)
