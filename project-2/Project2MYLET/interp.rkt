@@ -20,6 +20,13 @@
       (a-program (exp1)
                  (value-of exp1 (init-env))))))
 
+;; value-of-if : if-exp -> ExpVal
+(define value-of-if
+  (lambda (conds exps exp env)
+    (cond ((null? conds) (value-of exp env))
+          ((expval->bool (value-of (car conds) env)) (value-of (car exps) env))
+          (else (value-of-if (cdr conds) (cdr exps) exp env)))))
+
 ;; value-of : Exp * Env -> ExpVal
 ;; Page: 71
 (define value-of
@@ -45,6 +52,9 @@
                (let ((val1 (value-of exp1 env)))
                  (value-of body
                            (extend-env var val1 env))))
+      (if-exp (exp1 exp2 conds exps exp3)
+              (value-of-if (cons exp1 conds) (cons exp2 exps) exp3 env))
+      
       (op-exp (exp1 exp2 operation)
               (let ((val1 (value-of exp1 env))
                     (val2 (value-of exp2 env)))
