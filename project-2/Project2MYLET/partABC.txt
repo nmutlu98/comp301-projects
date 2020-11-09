@@ -27,5 +27,5 @@ PART B:
 
 PART C:
 
-    - Expressed Values: Int + Bool
-    - Denoted Values:   Int + Str
+    - Expressed Values: Int + Bool + Str
+    - Denoted Values:   Int + Bool + Str

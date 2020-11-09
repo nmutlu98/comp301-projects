@@ -46,12 +46,6 @@
 
 )
 
-(define-datatype identifier identifier?
-
-  ()
-
-)
-
 ;;;;;;;;;;;;;;;; expressed values ;;;;;;;;;;;;;;;;
 
 ;;; an expressed value is either a number, a boolean or a procval.
@@ -59,6 +53,8 @@
 (define-datatype expval expval?
   (num-val
     (value number?))
+  (str-val
+    (value symbol?))
   (bool-val
     (boolean boolean?)))
 
@@ -74,6 +70,12 @@
     (cases expval v
       (num-val (num) num)
       (else (expval-extractor-error 'num v)))))
+
+(define expval->str
+  (lambda (v)
+    (cases expval v
+      (str-val (str) str)
+      (else (expval-extractor-error 'str v)))))
 
 ;; expval->bool : ExpVal -> Bool
 ;; Page: 70
