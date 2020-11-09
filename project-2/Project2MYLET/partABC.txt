@@ -1,0 +1,31 @@
+PART A:
+
+    1) Five components of a language:
+
+        - Syntax and datatypes
+        - Values
+        - Environments
+        - Behaviour specification
+        - Behaviour implementation
+
+    2) Racket files.
+
+        - Syntax and datatypes          -> data-structures.rkt
+        - Values                        -> data-structures.rkt
+        - Environments                  -> environments.rkt
+        - Behaviour specification       -> lang.rkt: part - grammatical specification
+        - Behaviour implementation      -> lang.rkt: part - sllgen boilerplate
+
+
+PART B:
+
+    1) 
+
+
+    2) 
+
+
+PART C:
+
+    - Expressed Values: Int + Bool
+    - Denoted Values:   Int + Str

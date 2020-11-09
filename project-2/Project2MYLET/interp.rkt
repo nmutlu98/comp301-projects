@@ -36,6 +36,9 @@
       ;;\commentbox{ (value-of (const-exp \n{}) \r) = \n{}}
       (const-exp (num) (num-val num))
       
+      ; string expressions.
+      (str-exp (str) (str-val str))
+
       ;;\commentbox{ (value-of (var-exp \x{}) \r) = (apply-env \r \x{})}
       (var-exp (var) (apply-env env var))
      
@@ -52,6 +55,7 @@
                (let ((val1 (value-of exp1 env)))
                  (value-of body
                            (extend-env var val1 env))))
+                           
       (if-exp (exp1 exp2 conds exps exp3)
               (value-of-if (cons exp1 conds) (cons exp2 exps) exp3 env))
       

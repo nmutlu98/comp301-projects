@@ -4,7 +4,7 @@
 
 (provide (all-defined-out))
 
-;;;;;;;;;;;;;;;; grammatical specification ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;; part: grammatical specification ;;;;;;;;;;;;;;;;
 
 (define the-lexical-spec
   '((whitespace (whitespace) skip)
@@ -20,6 +20,8 @@
   '((program (expression) a-program)
     
     (expression (number) const-exp)
+
+    (expression (symbol) str-exp)
     
     (expression
      ("zero?" "(" expression ")")
@@ -42,7 +44,7 @@
     ))
 
 
-;;;;;;;;;;;;;;;; sllgen boilerplate ;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;; part: sllgen boilerplate ;;;;;;;;;;;;;;;;
 
 (sllgen:make-define-datatypes the-lexical-spec the-grammar)
 
