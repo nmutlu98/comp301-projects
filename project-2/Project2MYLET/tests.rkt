@@ -99,5 +99,10 @@
 ; ;;; string tests
 ; (str-test "'this'" "'this'")
 ; (str-test2 "'test" error)
-; 
+;
+ ;;; log-exp tests
+ (logical-op-1 "logical-op(zero?(op(3, 3, 1)), zero?(op(1, 1, 5)), 1)" #f)
+ (logical-op-2 "logical-op(zero?(op(3, 3, 5)), zero?(op(1, 1, 5)), 1)" #t)
+ (logical-op-1 "logical-op(zero?(op(3, 3, 1)), zero?(op(1, 1, 5)), 2)" #t)
+ (logical-op-2 "logical-op(zero?(op(3, 3, 5)), zero?(op(1, 1, 5)), 2)" #t)
  )

@@ -41,6 +41,9 @@
      ("op" "(" expression "," expression "," number ")")
      op-exp)
 
+    (expression
+     ("logical-op" "(" expression "," expression "," number ")") log-exp)
+
     ))
 
 

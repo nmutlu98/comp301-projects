@@ -68,5 +68,14 @@
                         ((eq? operation 2) (num-val (* num1 num2)))
                         ((eq? operation 3) (num-val (/ num1 num2)))
                         (else (num-val (- num1 num2)))))))
-  
+      
+      (log-exp (exp1 exp2 operation)
+               (let ((val1 (value-of exp1 env))
+                     (val2 (value-of exp2 env)))
+                 (let ((bool1 (expval->bool val1))
+                       (bool2 (expval->bool val2)))
+                   (if (eq? operation 1)
+                       (bool-val (and bool1 bool2))
+                       (bool-val (or bool1 bool2))))))
+                        
       )))
