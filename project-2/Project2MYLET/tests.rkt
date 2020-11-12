@@ -20,6 +20,7 @@
     (cond
       ((number? sloppy-val) (num-val sloppy-val))
       ((boolean? sloppy-val) (bool-val sloppy-val))
+      ((string? sloppy-val) (str-val sloppy-val))
       (else
        (eopl:error 'sloppy->expval 
                    "Can't convert sloppy value to expval: ~s"
@@ -97,8 +98,8 @@
  (if-true-test "if zero?(op(3, 3, 4)) then op(3, 3, 1) else 3" 6)
 ;
 ; ;;; string tests
-; (str-test "'this'" "'this'")
-; (str-test2 "'test" error)
+(str-test "'this'" "'this'")
+(str-test2 "'test" error)
 ;
  ;;; log-exp tests
  (logical-op-1 "logical-op(zero?(op(3, 3, 1)), zero?(op(1, 1, 5)), 1)" #f)

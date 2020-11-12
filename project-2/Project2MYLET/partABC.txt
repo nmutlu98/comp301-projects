@@ -10,19 +10,33 @@ PART A:
 
     2) Racket files.
 
-        - Syntax and datatypes          -> data-structures.rkt
-        - Values                        -> data-structures.rkt
+        - Syntax and datatypes          -> data-structures.rkt, lang.rkt
+        - Values                        -> data-structures.rkt, lang.rkt
         - Environments                  -> environments.rkt
-        - Behaviour specification       -> lang.rkt: part - grammatical specification
-        - Behaviour implementation      -> lang.rkt: part - sllgen boilerplate
+        - Behaviour specification       -> lang.rkt, interp.rkt
+        - Behaviour implementation      -> lang.rkt, interp.rkt
 
 
 PART B:
 
-    1) 
+    1) We changed the environments.rkt file to create x, y, z initial values. 
 
 
     2) 
+	[x=1]
+	 [y=5]
+	  [z=10]p
+
+	(define init-env 
+  	    (lambda ()
+    		(extend-env 
+     		'x (num-val 1)
+     		(extend-env
+      		'y (num-val 5)
+      		(extend-env
+       		'z (num-val 10)
+       		   (empty-env))))))
+
 
 
 PART C:

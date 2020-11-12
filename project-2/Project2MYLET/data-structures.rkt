@@ -4,48 +4,6 @@
 
 (provide (all-defined-out))               ; too many things to list
 
-
-;; define expression and program
-
-; define a program
-(define-datatype program program?
-  (a-program
-    (exp1 expression?))
-)
-
-; define expression 
-(define-datatype expression expression?
-
-  (const-exp
-    (num number?))
-
-  (str-exp
-    (str symbol?))
-
-  (op-exp
-    (exp1 expression?)
-    (exp2 expression?)
-    (num number?))
-
-  (zero?-exp
-    (exp1 expression?))
-
-  (if-exp
-    (exp1 expression?)
-    (exp2 expression?)
-    (exp3 expression?)
-    (exp4 expression?))
-
-  (var-exp
-    (var identifier?))
-
-  (let-exp
-    (var identifier?)
-    (exp1 expression?)
-    (body expression?))
-
-)
-
 ;;;;;;;;;;;;;;;; expressed values ;;;;;;;;;;;;;;;;
 
 ;;; an expressed value is either a number, a boolean or a procval.
@@ -54,7 +12,7 @@
   (num-val
     (value number?))
   (str-val
-    (value symbol?))
+    (value string?))
   (bool-val
     (boolean boolean?)))
 

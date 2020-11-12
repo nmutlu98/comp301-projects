@@ -37,7 +37,7 @@
       (const-exp (num) (num-val num))
       
       ; string expressions.
-      (str-exp (str) (str-val str))
+      (str-exp (str) (str-val (apply string-append (map symbol->string (list str)))))
 
       ;;\commentbox{ (value-of (var-exp \x{}) \r) = (apply-env \r \x{})}
       (var-exp (var) (apply-env env var))

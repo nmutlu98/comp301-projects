@@ -9,9 +9,8 @@
 (define the-lexical-spec
   '((whitespace (whitespace) skip)
     (comment ("%" (arbno (not #\newline))) skip)
-    (identifier
-     (letter (arbno (or letter digit "_" "-" "?")))
-     symbol)
+    (string ("'" letter (arbno (or letter whitespace digit "_" "-" "?")) "'") symbol)
+    (identifier (letter (arbno (or letter digit "_" "-" "?"))) symbol)
     (number (digit (arbno digit)) number)
     (number ("-" digit (arbno digit)) number)
     ))
@@ -21,7 +20,7 @@
     
     (expression (number) const-exp)
 
-    (expression (symbol) str-exp)
+    (expression (string) str-exp)
     
     (expression
      ("zero?" "(" expression ")")
