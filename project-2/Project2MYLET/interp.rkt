@@ -57,7 +57,11 @@
                            (extend-env var val1 env))))
                            
       (if-exp (exp1 exp2 conds exps exp3)
-              (value-of-if (cons exp1 conds) (cons exp2 exps) exp3 env))
+              (let ((cond1 (value-of exp1 env)))
+                (let ((cond1-bool (expval->bool cond1)))
+                  (if cond1-bool
+                      (value-of exp2 env)
+                      (value-of-if conds exps exp3 env)))))
       
       (op-exp (exp1 exp2 operation)
               (let ((val1 (value-of exp1 env))
