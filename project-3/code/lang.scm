@@ -72,6 +72,20 @@
         ("setref" "(" expression "," expression ")")
         setref-exp)
 
+      ;; new for array operations
+
+      (expression
+       ("newarray" "(" number "," number ")")
+       newarray-exp)
+
+      (expression
+       ("update-array" "(" expression "," number "," expression ")")
+       update-array-exp)
+
+      (expression
+       ("read-array" "(" expression "," number ")")
+       read-array-exp)
+
       ))
 
   ;;;;;;;;;;;;;;;; sllgen boilerplate ;;;;;;;;;;;;;;;;
