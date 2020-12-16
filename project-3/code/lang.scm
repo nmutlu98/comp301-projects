@@ -11,9 +11,7 @@
   (define the-lexical-spec
     '((whitespace (whitespace) skip)
       (comment ("%" (arbno (not #\newline))) skip)
-      (identifier
-       (letter (arbno (or letter digit "_" "-" "?")))
-       symbol)
+      (identifier (letter (arbno (or letter digit "_" "-" "?"))) symbol)
       (number (digit (arbno digit)) number)
       (number ("-" digit (arbno digit)) number)
       ))
@@ -72,6 +70,24 @@
         ("setref" "(" expression "," expression ")")
         setref-exp)
 
+      ;; array expressions
+
+      ;; syntax -> newarray(size, default-value)
+      (expression
+       ("newarray" "(" expression "," expression ")") newarray-exp)
+
+      ;; syntax -> update-array(array, index, value)
+      (expression
+       ("update-array" "(" expression "," expression "," expression ")") updatearray-exp)
+
+      ;; syntax -> read-array(array, index)
+      (expression
+       ("read-array" "(" expression "," expression ")") readarray-exp)
+
+      ;; syntax -> length-array(array)
+      (expression
+       ("length-array" "(" expression ")") lengtharray-exp)
+ 
       ))
 
   ;;;;;;;;;;;;;;;; sllgen boilerplate ;;;;;;;;;;;;;;;;

@@ -108,6 +108,39 @@
               (begin
                 (setref! ref v2)
                 (num-val 23)))))
+
+        ;; create array
+        (newarray-exp (exp1 exp2)
+                      (let ((length (expval->num (value-of exp1 env)))
+                            (value (value-of exp2 env)))
+                        (array-val (make-array length value))))
+
+        ;; update array
+        (updatearray-exp (exp1 exp2 exp3)
+                         (let ((array (expval->array (value-of exp1 env)))
+                               (index (expval->num (value-of exp2 env)))
+                               (value (value-of exp3 env)))
+                           (update-array array index value)
+                           (num-val 42)
+                           )
+                         )
+
+        ;; get element of an array
+        (readarray-exp (exp1 exp2)
+                       (let ((array (expval->array (value-of exp1 env)))
+                             (index (expval->num (value-of exp2 env))))
+                         (read-array array index))
+                       )
+
+        ;; get length of an array
+        (lengtharray-exp (exp1)
+                         (let ((array (expval->array (value-of exp1 env))))
+                           (num-val (length-array array))
+                           )
+                         )
+        
+
+        
         )))
 
   ;; apply-procedure : Proc * ExpVal -> ExpVal

@@ -3,7 +3,7 @@
   (require "lang.scm")                  ; for expression?
   (require "store.scm")                 ; for reference?
 
-  (provide (all-defined-out))               ; too many things to list
+  (provide (all-defined-out))           ; too many things to list
 
 ;;;;;;;;;;;;;;;; expressed values ;;;;;;;;;;;;;;;;
 
@@ -12,13 +12,15 @@
 
   (define-datatype expval expval?
     (num-val
-      (value number?))
+     (value number?))
     (bool-val
-      (boolean boolean?))
+     (boolean boolean?))
     (proc-val 
-      (proc proc?))
+     (proc proc?))
     (ref-val
-      (ref reference?))
+     (ref reference?))
+    (array-val
+     (array array?))
     )
 
 ;;; extractors:
@@ -47,6 +49,15 @@
 	(ref-val (ref) ref)
 	(else (expval-extractor-error 'reference v)))))
 
+  
+  (define expval->array
+    (lambda (v)
+      (cases expval v
+        (array-val (array) array)
+        (else (expval-extractor-error 'array v)))
+      )
+    )
+
   (define expval-extractor-error
     (lambda (variant value)
       (eopl:error 'expval-extractors "Looking for a ~s, found ~s"
@@ -59,6 +70,72 @@
       (bvar symbol?)
       (body expression?)
       (env environment?)))
+
+;;;;;;;;;;;;;;;; arrays ;;;;;;;;;;;;;;;;;;;;
+
+
+  ;; define array datatype
+  (define-datatype array array?
+    (an-array
+     (ref reference?)
+     (length (lambda (x) (and (integer? x) (positive? x))))
+     )
+    )
+
+  ;; array functions
+
+  ;; create an array with length and value
+  (define (make-array length value)
+    (if (positive? length)
+        (let ((result (newref value)))
+          (make-array-helper (- length 1) value result length))
+        (eopl:error 'make-array
+                    "The array length must be greater than 0.")
+        )
+    )
+
+  ;; loop for creating elements of array except the zero index. 
+  (define (make-array-helper length value result init-length)
+    (if (= 0 length)
+        (an-array result init-length)
+        (begin (newref value)
+               (make-array-helper (- length 1) value
+                                  result init-length))
+        )
+    )
+
+  ;; read element of array at specified index 
+  (define (read-array array1 index)
+    (cases array array1
+      (an-array (ref length)
+                (if (< index length)
+                    (deref (+ ref index))
+                    (eopl:error 'array-ref
+                                "Array index out of bound."))
+                )
+      )
+    )
+
+  ;; update element of array at specified index
+  (define (update-array array1 index value)
+    (cases array array1
+      (an-array (ref length)
+                (if (< index length)
+                    (setref! (+ ref index) value)
+                    (eopl:error 'array-ref
+                                "Array index out of bound."))
+                )
+      )
+    )
+
+
+  ;; get length of an array
+  (define (length-array array1)
+    (cases array array1
+      (an-array (ref length) length))
+    )
+
+;;;;;;;;;;;;;;;; enviroment ;;;;;;;;;;;;;;;;
   
   (define-datatype environment environment?
     (empty-env)
