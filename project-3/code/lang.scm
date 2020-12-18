@@ -86,6 +86,20 @@
        ("read-array" "(" expression "," number ")")
        read-array-exp)
 
+      (expression ("newqueue" "(" ")") newqueue-exp)
+
+      (expression ("queue-push" "(" expression "," expression ")") queue-push-exp)
+
+      (expression ("queue-pop" "(" expression ")") queue-pop-exp)
+
+      (expression ("queue-size" "(" expression ")") queue-size-exp)
+
+      (expression ("queue-top" "(" expression ")") queue-top-exp)
+      
+      (expression ("empty-queue?" "(" expression ")") empty-queue?-exp)
+
+      (expression ("print-queue" "(" expression ")") print-queue-exp)
+
       ))
 
   ;;;;;;;;;;;;;;;; sllgen boilerplate ;;;;;;;;;;;;;;;;

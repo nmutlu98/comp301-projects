@@ -121,10 +121,54 @@
         (read-array-exp (array num1)
                         (let ((arr (expval->arr (value-of array env))))
                           (helper-read-array arr num1)))
+
+        (newqueue-exp ()
+                      (value-of (newarray-exp 5 -1) env))
+
+        (queue-push-exp (q exp)
+                        (let ((queue (value-of q env)))
+                          (let ((size (queue-capacity (expval->arr queue)))
+                                (val (value-of exp env))
+                                (empty-index (first-empty-index-in-queue (expval->arr queue))))
+                            (if (is-full? size empty-index)
+                                (begin
+                                  (extend-queue (expval->arr queue) empty-index (value-of (newarray-exp (* size 2) -1) env))
+                                  (let ((empty-index (first-empty-index-in-queue (expval->arr queue))))
+                                    (helper-update-array (expval->arr queue) empty-index val)))
+                                (helper-update-array (expval->arr (value-of q env)) empty-index val)))))
+                              
+        
+        (empty-queue?-exp (q)
+                          (if (helper-empty-queue (expval->arr (value-of q env)))
+                              (bool-val #t)
+                              (bool-val #f)
+                          ))
                         
+        (queue-pop-exp (q)
+                       (let ((queue (expval->arr (value-of q env))))
+                         (if (helper-empty-queue queue)
+                             (num-val -1)
+                             (let ((firstval (deref (expval->ref (car queue)))))
+                               (helper-pop-queue queue)
+                               firstval))))
+                               
+        
+        (queue-top-exp (q)
+                      (let ((queue (expval->arr (value-of q env))))
+                         (if (helper-empty-queue queue)
+                             (num-val -1)
+                             (let ((firstval (deref (expval->ref (car queue)))))
+                               firstval))))
+        
+        (queue-size-exp (q)
+                     (let ((queue (expval->arr (value-of q env))))
+                       (num-val (queue-size queue))))
+        
+        (print-queue-exp (q)
+                     (let ((queue (expval->arr (value-of q env))))
+                       (helper-print-queue queue)))
         
         )))
-
   (define helper-new-array
     (lambda (num1 num2)
       (if (eq? num1 0)
@@ -142,6 +186,64 @@
       (if (eq? index 0)
           (deref (expval->ref (car arr)))
           (helper-read-array (cdr arr) (- index 1)))))
+
+  (define queue-size
+    (lambda (arr)
+    (if (helper-empty-queue arr)
+          0
+          (+ 1 (queue-size (cdr arr))))))
+  (define queue-capacity
+    (lambda (arr)
+      (if (null? arr)
+          0
+          (+ 1 (queue-capacity (cdr arr))))))
+  
+  (define first-empty-index-in-queue
+    (lambda (arr)
+      (if (eq? (expval->num (deref (expval->ref (car arr)))) -1)
+          0
+          (+ 1 (first-empty-index-in-queue (cdr arr))))))
+
+   (define is-full?
+     (lambda (size first-empty-index)
+       (eq? 1 (- size first-empty-index))))
+
+  (define extend-queue
+    (lambda (arr index value)
+      (helper-update-array arr index value)))
+
+  (define helper-pop-queue
+    (lambda (arr)
+      (define helper
+        (lambda (current-index size)
+          (if (eq? current-index (- size 1))
+              (helper-update-array arr current-index (num-val -1))
+              (begin
+                (helper-update-array arr current-index (deref (expval->ref (list-ref arr (+ current-index 1)))))
+                (helper (+ current-index 1) size)))))
+      (let ((size (queue-size arr)))
+        (helper 0 size))))
+      
+
+  (define helper-print-queue
+    (lambda (arr)
+      (define helper
+        (lambda (lst remaining-arr)
+          (if (helper-empty-queue remaining-arr)
+              (map number->string lst)
+              (helper (append lst (list (expval->num (deref (expval->ref (car remaining-arr)))))) (cdr remaining-arr)))))
+      (display (helper '() arr))))
+
+  (define helper-empty-queue
+    (lambda (arr)
+      (define helper
+        (lambda (remaining-array indicator)
+          (cond ((null? remaining-array) indicator)
+                ((eq? (expval->num (deref (expval->ref (car remaining-array)))) -1) (helper (cdr remaining-array) indicator))
+                ((> (expval->num (deref (expval->ref (car remaining-array)))) 0) #f))))
+      (helper arr #t)))
+    
+
 
   ;; apply-procedure : Proc * ExpVal -> ExpVal
   ;; 
@@ -170,7 +272,7 @@
                   (eopl:printf "~%")))
               (value-of body new-env)))))))
 
-
+  
   ;; store->readable : Listof(List(Ref,Expval)) 
   ;;                    -> Listof(List(Ref,Something-Readable))
   (define store->readable
