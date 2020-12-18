@@ -123,20 +123,14 @@
                           (helper-read-array arr num1)))
 
         (newqueue-exp ()
-                      (value-of (newarray-exp 5 -1) env))
+                      (value-of (newarray-exp 1001 -1) env))
 
         (queue-push-exp (q exp)
                         (let ((queue (value-of q env)))
-                          (let ((size (queue-capacity (expval->arr queue)))
-                                (val (value-of exp env))
+                          (let ((val (value-of exp env))
                                 (empty-index (first-empty-index-in-queue (expval->arr queue))))
-                            (if (is-full? size empty-index)
-                                (begin
-                                  (extend-queue (expval->arr queue) empty-index (value-of (newarray-exp (* size 2) -1) env))
-                                  (let ((empty-index (first-empty-index-in-queue (expval->arr queue))))
-                                    (helper-update-array (expval->arr queue) empty-index val)))
-                                (helper-update-array (expval->arr (value-of q env)) empty-index val)))))
-                              
+                                (helper-update-array (expval->arr queue) empty-index val))))
+        
         
         (empty-queue?-exp (q)
                           (if (helper-empty-queue (expval->arr (value-of q env)))
@@ -169,11 +163,18 @@
                        (helper-print-queue queue)))
         
         )))
+
+  ; helper-new-array: integer * expval -> (list-of ref-val)
+  ; usage: used to create a new array with num1 elements where each element's value is num2
+  
   (define helper-new-array
     (lambda (num1 num2)
       (if (eq? num1 0)
           '()
           (cons (ref-val (newref num2)) (helper-new-array (- num1 1) num2)))))
+
+  ; helper-update-array: (list-of ref-val) * integer * expval -> returns nothing
+  ; usage: used to update the value in the indexth element of the given array. The new value stored in the indexth element becomes value.
   
   (define helper-update-array
     (lambda (array index value)
@@ -181,22 +182,25 @@
           (setref! (expval->ref (car array)) value)
           (helper-update-array (cdr array) (- index 1) value))))
 
+  ; helper-read-array: (list-of ref-val) * integer -> expval
+  ; usage: used to get the value stored in the given index of the array
+  
   (define helper-read-array
     (lambda (arr index)
       (if (eq? index 0)
           (deref (expval->ref (car arr)))
           (helper-read-array (cdr arr) (- index 1)))))
 
+  ; queue-size: (list-of ref-val) -> integer
+  ; usage: used to get the number of elements in the queue
   (define queue-size
     (lambda (arr)
     (if (helper-empty-queue arr)
           0
           (+ 1 (queue-size (cdr arr))))))
-  (define queue-capacity
-    (lambda (arr)
-      (if (null? arr)
-          0
-          (+ 1 (queue-capacity (cdr arr))))))
+  
+  ; first-empty-index-in-queue: (list-of ref-val) -> integer
+  ; usage: used to get the index of the first empty cell in the queue
   
   (define first-empty-index-in-queue
     (lambda (arr)
@@ -204,14 +208,9 @@
           0
           (+ 1 (first-empty-index-in-queue (cdr arr))))))
 
-   (define is-full?
-     (lambda (size first-empty-index)
-       (eq? 1 (- size first-empty-index))))
-
-  (define extend-queue
-    (lambda (arr index value)
-      (helper-update-array arr index value)))
-
+  ; helper-pop-queue: (list-of ref-val) -> returns nothing
+  ; usage: used to slide all the elements to the left after an element is popped from the queue
+  
   (define helper-pop-queue
     (lambda (arr)
       (define helper
@@ -224,7 +223,9 @@
       (let ((size (queue-size arr)))
         (helper 0 size))))
       
-
+  ; helper-print-queue: (list-of ref-val) -> returns nothing
+  ; usage: used to traverse all the elements in the queue and make a string from those elements seperated by spaces. Then prints the string with display.
+  
   (define helper-print-queue
     (lambda (arr)
       (define helper
