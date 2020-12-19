@@ -140,30 +140,7 @@
                            (num-val (length-array array))
                            )
                          )
-
-        ;; stack operations
-
-        ;; create a stack
-        (newstack-exp ()
-                      (let ((array (array-val (make-array 1000 -1)))
-                            (top (num-val 1)))
-                        (stack-val array top))
-                      )
-
-        ;; push a element to a stack
-        (stackpush-exp (exp1 exp2)
-                       (let ((stack (expval->stack (value-of exp1 env)))
-                             (value (value-of exp2)))
-                         
-        
-        
-        
-
-
-
-
-        
-        
+ 
         )))
 
   (define helper-new-array

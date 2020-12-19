@@ -65,12 +65,6 @@
       )
     )
 
-  (define expval->stack
-    (lambda (v)
-      (cases expval v
-        (stack-val (array top) array top)))
-    )
-
   (define expval-extractor-error
     (lambda (variant value)
       (eopl:error 'expval-extractors "Looking for a ~s, found ~s"
@@ -148,10 +142,6 @@
     )
 
 ;;;;;;;;;;;;;;;; stacks ;;;;;;;;;;;;;;;;;;;;
-
-
-  ;; push an element to stack
-  (define (push-stack stack value)
  
     
 
