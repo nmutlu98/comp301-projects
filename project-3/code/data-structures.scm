@@ -26,6 +26,9 @@
      (ref reference?))
     (array-val
      (array array?))
+    (stack-val
+     (array expval?)
+     (top expval?))
     )
 
 ;;; extractors:
@@ -62,6 +65,12 @@
       )
     )
 
+  (define expval->stack
+    (lambda (v)
+      (cases expval v
+        (stack-val (array top) array top)))
+    )
+
   (define expval-extractor-error
     (lambda (variant value)
       (eopl:error 'expval-extractors "Looking for a ~s, found ~s"
@@ -82,8 +91,7 @@
   (define-datatype array array?
     (an-array
      (ref reference?)
-     (length (lambda (x) (and (integer? x) (positive? x))))
-     )
+     (length (lambda (x) (and (integer? x) (positive? x)))))
     )
 
   ;; array functions
@@ -115,7 +123,7 @@
                 (if (< index length)
                     (deref (+ ref index))
                     (eopl:error 'array-ref
-                                "Array index out of bound."))
+                                "Array index out of range!"))
                 )
       )
     )
@@ -127,7 +135,7 @@
                 (if (< index length)
                     (setref! (+ ref index) value)
                     (eopl:error 'array-ref
-                                "Array index out of bound."))
+                                "Array index out of range!"))
                 )
       )
     )
@@ -138,6 +146,31 @@
     (cases array array1
       (an-array (ref length) length))
     )
+
+;;;;;;;;;;;;;;;; stacks ;;;;;;;;;;;;;;;;;;;;
+
+
+  ;; push an element to stack
+  (define (push-stack stack value)
+ 
+    
+
+  
+
+  
+
+
+;;;;;;;;;;;;;;;; queues ;;;;;;;;;;;;;;;;;;;;
+
+
+
+
+
+
+
+
+  
+  
 
 ;;;;;;;;;;;;;;;; enviroment ;;;;;;;;;;;;;;;;
   

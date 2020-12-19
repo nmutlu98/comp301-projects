@@ -109,7 +109,8 @@
                 (setref! ref v2)
                 (num-val 23)))))
 
-<<<<<<< HEAD
+        ;; array operations
+        
         ;; create array
         (newarray-exp (exp1 exp2)
                       (let ((length (expval->num (value-of exp1 env)))
@@ -139,23 +140,29 @@
                            (num-val (length-array array))
                            )
                          )
+
+        ;; stack operations
+
+        ;; create a stack
+        (newstack-exp ()
+                      (let ((array (array-val (make-array 1000 -1)))
+                            (top (num-val 1)))
+                        (stack-val array top))
+                      )
+
+        ;; push a element to a stack
+        (stackpush-exp (exp1 exp2)
+                       (let ((stack (expval->stack (value-of exp1 env)))
+                             (value (value-of exp2)))
+                         
+        
+        
         
 
-=======
-        (newarray-exp (num1 num2)
-                  (arr-val (helper-new-array num1 (num-val num2))))
 
-        (update-array-exp (array num1 exp1)
-                          (let ((val (value-of exp1 env))
-                                (sc-array (expval->arr (value-of array env))))
-                            (helper-update-array sc-array num1 val)
-                            (num-val 23)))
 
-        (read-array-exp (array num1)
-                        (let ((arr (expval->arr (value-of array env))))
-                          (helper-read-array arr num1)))
-                        
->>>>>>> d253c3b192c2f37a79fe86d038b203589b96f931
+
+        
         
         )))
 
