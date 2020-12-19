@@ -145,7 +145,7 @@
 
         ; create new stack with size of 1001
         (newstack-exp ()
-            (array-val (make-array 1001 0)))
+            (array-val (make-array 1001 (num-val 0))))
 
         ;; push an element to stack
         (stackpush-exp (exp1 exp2) (let ((stack (expval->array (value-of exp1 env)))) ; get array for stack
@@ -158,8 +158,8 @@
         (stackpop-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))               ; get array for stack
                                (let ((index (- (stack-top stack 0) 1)))                       ; get top-1 index for stack
                                  (let ((removed-val (read-array stack index)))     ; get removed value to return
-                                   (update-array stack index 0)                               ; update array with top-1 index equals to -1
-                                   (num-val removed-val)))))                                  ; return removed value.
+                                   (update-array stack index (num-val 0))                               ; update array with top-1 index equals to -1
+                                   removed-val))))                                  ; return removed value.
 
         ;; return size of stack
         (stacksize-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
@@ -168,11 +168,11 @@
         ;; return top element of stack
         (stacktop-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
                                (let ((index (stack-top stack 0)))
-                                 (num-val (read-array stack index)))))
+                                 (read-array stack index))))
 
         ;; check whether stack is empty
         (stackempty-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
-                                 (num-val (stack-empty? stack))))
+                                 (bool-val (stack-empty? stack))))
 
         ;; print stack elements
         (stackprint-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
@@ -189,27 +189,27 @@
   ;; return top element of stack
   (define stack-top
     (lambda (array index)
-      (if (= (read-array array index) 0)
+      (if (= (expval->num (read-array array index)) 0)
           index
           (stack-top array (+ index 1)))))
 
   ;; returns size of stack
   (define stack-size
     (lambda (array index)
-      (if (= (read-array array index) 0)
+      (if (= (expval->num (read-array array index)) 0)
           0
           (+ 1 (stack-size array (+ index 1))))))
 
   ;; checks stack empty or not
   (define stack-empty?
-    (lambda (array) (= (read-array array 0) 0)))
+    (lambda (array) (= (expval->num (read-array array 0)) 0)))
 
   ;; prints element of stack
   (define stack-print
     (lambda (array index)
-      (if (= (read-array array index) 0)
+      (if (= (expval->num (read-array array index)) 0)
           (display "")
-          (begin (display (read-array array index))
+          (begin (display (expval->num (read-array array index)))
                  (stack-print array (+ index 1))))))
           
   ;; apply-procedure : Proc * ExpVal -> ExpVal
@@ -252,7 +252,4 @@
         l)))
  
   )
-  
-
-
   
