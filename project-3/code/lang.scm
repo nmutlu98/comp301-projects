@@ -88,41 +88,39 @@
       (expression
        ("length-array" "(" expression ")") lengtharray-exp)
 
-;      ;; stack expressions
-;
-;      ;; syntax -> newstack()
-;      (expression
-;       ("newstack" "(" ")") newstack-exp)
-;
-;      ;; syntax -> stack-push(stack, value)
-;      (expression
-;       ("stack-push" "(" expression "," expression ")") stackpush-exp)
-;
-;      ;; syntax -> stack-pop(stack)
-;      (expression
-;       ("stack-pop" "(" expression ")") stackpop-exp)
-;
-;      ;; syntax -> stack-size(stack)
-;      (expression
-;       ("stack-size" "(" expression ")") stacksize-exp)
-;
-;      ;; syntax -> stack-top(stack)
-;      (expression
-;       ("stack-top" "(" expression ")") stacktop-exp)
-;
-;      ;; syntax -> empty-stack?(stack)
-;      (expression
-;       ("empty-stack?" "(" expression ")") stackempty-exp)
-;
-;      ;; syntax -> print-stack(stack)
-;      (expression
-;       ("print-stack" "(" expression ")") stackprint-exp)
-;
-;      
-;      ;; queue expressions
-;
-      ;; TODO
-      
+      ;; stack expressions
+
+      ;; syntax -> newstack()
+      (expression
+        ("newstack" "(" ")") newstack-exp)
+
+      ;; syntax -> stack-push(stack, value)
+      (expression
+        ("stack-push" "(" expression "," expression ")") stackpush-exp)
+
+      ;; syntax -> stack-pop(stack)
+      (expression
+        ("stack-pop" "(" expression ")") stackpop-exp)
+
+      ;; syntax -> stack-size(stack)
+      (expression
+        ("stack-size" "(" expression ")") stacksize-exp)
+
+      ;; syntax -> stack-top(stack)
+      (expression
+        ("stack-top" "(" expression ")") stacktop-exp)
+
+      ;; syntax -> empty-stack?(stack)
+      (expression
+        ("empty-stack?" "(" expression ")") stackempty-exp)
+
+      ;; syntax -> print-stack(stack)
+      (expression
+        ("print-stack" "(" expression ")") stackprint-exp)
+
+      ;; queue expressions
+    
+
       
       
       

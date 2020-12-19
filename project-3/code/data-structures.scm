@@ -26,9 +26,6 @@
      (ref reference?))
     (array-val
      (array array?))
-    (stack-val
-     (array expval?)
-     (top expval?))
     )
 
 ;;; extractors:
