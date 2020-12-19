@@ -155,11 +155,11 @@
                                        (num-val 42))))                                ; return dummy val.
 
         ;; pop and element from stack and returns value of element
-        (stackpop-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))               ; get array for stack
-                               (let ((index (- (stack-top stack 0) 1)))                       ; get top-1 index for stack
-                                 (let ((removed-val (read-array stack index)))     ; get removed value to return
-                                   (update-array stack index (num-val 0))                               ; update array with top-1 index equals to -1
-                                   removed-val))))                                  ; return removed value.
+        (stackpop-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))       ; get array for stack
+                               (let ((index (- (stack-top stack 0) 1)))               ; get top-1 index for stack
+                                 (let ((removed-val (read-array stack index)))        ; get removed value to return
+                                   (update-array stack index (num-val 0))             ; update array with top-1 index equals to -1
+                                   removed-val))))                                    ; return removed value.
 
         ;; return size of stack
         (stacksize-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
@@ -167,7 +167,7 @@
 
         ;; return top element of stack
         (stacktop-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
-                               (let ((index (stack-top stack 0)))
+                               (let ((index (- (stack-top stack 0) 1)))
                                  (read-array stack index))))
 
         ;; check whether stack is empty
