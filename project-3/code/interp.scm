@@ -128,19 +128,19 @@
         (queue-push-exp (q exp)
                         (let ((queue (value-of q env)))
                           (let ((val (value-of exp env))
-                                (empty-index (first-empty-index-in-queue (expval->arr queue))))
+                                (empty-index (first-empty-index-in-array (expval->arr queue))))
                                 (helper-update-array (expval->arr queue) empty-index val))))
         
         
         (empty-queue?-exp (q)
-                          (if (helper-empty-queue (expval->arr (value-of q env)))
+                          (if (helper-empty-array (expval->arr (value-of q env)))
                               (bool-val #t)
                               (bool-val #f)
                           ))
                         
         (queue-pop-exp (q)
                        (let ((queue (expval->arr (value-of q env))))
-                         (if (helper-empty-queue queue)
+                         (if (helper-empty-array queue)
                              (num-val -1)
                              (let ((firstval (deref (expval->ref (car queue)))))
                                (helper-pop-queue queue)
@@ -149,18 +149,55 @@
         
         (queue-top-exp (q)
                       (let ((queue (expval->arr (value-of q env))))
-                         (if (helper-empty-queue queue)
+                         (if (helper-empty-array queue)
                              (num-val -1)
                              (let ((firstval (deref (expval->ref (car queue)))))
                                firstval))))
         
         (queue-size-exp (q)
                      (let ((queue (expval->arr (value-of q env))))
-                       (num-val (queue-size queue))))
+                       (num-val (array-size queue))))
         
         (print-queue-exp (q)
                      (let ((queue (expval->arr (value-of q env))))
                        (helper-print-queue queue)))
+
+        (newstack-exp ()
+                      (value-of (newarray-exp 1001 -1) env))
+
+        (stack-push-exp (s exp1)
+                    (let ((stack (expval->arr (value-of s env))))
+                          (let ((val (value-of exp1 env))
+                                (empty-index (first-empty-index-in-array stack)))
+                                (helper-update-array stack empty-index val))))
+
+        (stack-pop-exp (s)
+                       (let ((stack (expval->arr (value-of s env))))
+                         (let ((size (array-size stack)))
+                           (let ((pop-val (helper-read-array stack (- size 1))))
+                             (helper-update-array stack (- size 1) (num-val -1))
+                             pop-val))))
+
+        (stack-top-exp (s)
+                       (let ((stack (expval->arr (value-of s env))))
+                         (let ((size (array-size stack)))
+                           (let ((top-val (helper-read-array stack (- size 1))))
+                             top-val))))
+
+        (stack-size-exp (s)
+                        (let ((stack (expval->arr (value-of s env))))
+                          (num-val (array-size stack))))
+
+        (empty-stack?-exp (s)
+                          (let ((stack (expval->arr (value-of s env))))
+                            (if (eq? (array-size stack) 0)
+                                (bool-val #t)
+                                (bool-val #f))))
+
+        (print-stack-exp (s)
+                         (let ((stack (expval->arr (value-of s env))))
+                           (helper-print-stack stack)))
+        
         
         )))
 
@@ -191,22 +228,22 @@
           (deref (expval->ref (car arr)))
           (helper-read-array (cdr arr) (- index 1)))))
 
-  ; queue-size: (list-of ref-val) -> integer
+  ; array-size: (list-of ref-val) -> integer
   ; usage: used to get the number of elements in the queue
-  (define queue-size
+  (define array-size
     (lambda (arr)
-    (if (helper-empty-queue arr)
+    (if (helper-empty-array arr)
           0
-          (+ 1 (queue-size (cdr arr))))))
+          (+ 1 (array-size (cdr arr))))))
   
-  ; first-empty-index-in-queue: (list-of ref-val) -> integer
+  ; first-empty-index-in-array: (list-of ref-val) -> integer
   ; usage: used to get the index of the first empty cell in the queue
   
-  (define first-empty-index-in-queue
+  (define first-empty-index-in-array
     (lambda (arr)
       (if (eq? (expval->num (deref (expval->ref (car arr)))) -1)
           0
-          (+ 1 (first-empty-index-in-queue (cdr arr))))))
+          (+ 1 (first-empty-index-in-array (cdr arr))))))
 
   ; helper-pop-queue: (list-of ref-val) -> returns nothing
   ; usage: used to slide all the elements to the left after an element is popped from the queue
@@ -220,7 +257,7 @@
               (begin
                 (helper-update-array arr current-index (deref (expval->ref (list-ref arr (+ current-index 1)))))
                 (helper (+ current-index 1) size)))))
-      (let ((size (queue-size arr)))
+      (let ((size (array-size arr)))
         (helper 0 size))))
       
   ; helper-print-queue: (list-of ref-val) -> returns nothing
@@ -230,12 +267,15 @@
     (lambda (arr)
       (define helper
         (lambda (lst remaining-arr)
-          (if (helper-empty-queue remaining-arr)
+          (if (helper-empty-array remaining-arr)
               (map number->string lst)
               (helper (append lst (list (expval->num (deref (expval->ref (car remaining-arr)))))) (cdr remaining-arr)))))
       (display (helper '() arr))))
 
-  (define helper-empty-queue
+  ; helper-empty-array: (list-of ref-val) -> returns boolean
+  ; usage: used to check whether an array has empty cells or not. returns true if it has, returns false otherwise.
+  
+  (define helper-empty-array
     (lambda (arr)
       (define helper
         (lambda (remaining-array indicator)
@@ -243,6 +283,19 @@
                 ((eq? (expval->num (deref (expval->ref (car remaining-array)))) -1) (helper (cdr remaining-array) indicator))
                 ((> (expval->num (deref (expval->ref (car remaining-array)))) 0) #f))))
       (helper arr #t)))
+  
+; helper-print-stack: (list-of ref-val) -> returns nothing
+; usage: used to traverse all the elements in the stack and make a string from those elements seperated by space, it reverses the string. Then prints the string with display.
+  
+  (define helper-print-stack
+    (lambda (arr)
+      (define helper
+        (lambda (lst remaining-arr)
+          (if (helper-empty-array remaining-arr)
+              (map number->string (reverse lst))
+              (helper (append lst (list (expval->num (deref (expval->ref (car remaining-arr)))))) (cdr remaining-arr)))))
+      (display (helper '() arr))))
+          
     
 
 
