@@ -190,8 +190,8 @@
         ;; queue operations
 
         ;; create an empty queue
-        ;; create an array with size 1002 the indexes 0 and 1 
-        ;; will keep the start and end indexes of queue
+        ;; create an array with size 1002
+        ;; the indexes 0 and 1 will keep the front and tail indexes of queue
         (newqueue-exp ()
                       (array-val (make-array 1002 (num-val 0))))
 
@@ -199,20 +199,25 @@
         (queuepush-exp (exp1 exp2)
                        (let ((queue (expval->array (value-of exp1 env))))
                          (let ((value (value-of exp2 env))
-                               (index (queue-end queue #f)))
+                               (index (queue-tail queue #f)))
                            (update-array queue index value)
-                           (num-val 42))))
+                           (num-val 42))
+                         )
+                       )
 
         ;; pop and element from queue
         (queuepop-exp (exp1)
                       (let ((queue (expval->array (value-of exp1 env))))
-                        (let ((index ((queue-start queue #f))))
-                          (if (queue-empty? queue)
-                              (num-val -1)
+                        (if (queue-empty? queue)
+                            (num-val -1)
+                            (let ((index (queue-front queue #f)))
                               (let ((removed-value (read-array queue index)))
                                 (update-array queue index (num-val 0))
-                                removed-value)))))
-
+                                removed-value))
+                            )
+                        )
+                      )
+        
         ;; get size of queue
         (queuesize-exp (exp1)
                        (let ((queue (expval->array (value-of exp1 env))))
@@ -221,7 +226,7 @@
         ;; get top element of queue
         (queuetop-exp (exp1)
                       (let ((queue (expval->array (value-of exp1 env))))
-                        (let ((index (queue-start queue #t)))
+                        (let ((index (queue-front queue #t)))
                           (read-array queue index))))
 
         ;; check whether queue is empty
@@ -241,70 +246,72 @@
   ;; returns start index for a queue
   ;; in our design we stored start index always in 0 index of array
   ;; we updated when we push or pop elements 
-  (define queue-start-index
+  (define queue-front-index
     (lambda (array)
-      (read-array array 0)))
+      (expval->num (read-array array 0))))
 
   ;; returns end index for a queue
   ;; in our design we stored end index always in 1 index of array
   ;; we updated when we push or pop elements 
-  (define queue-end-index
+  (define queue-tail-index
     (lambda (array)
-      (read-array array 1)))
+      (expval->num (read-array array 1))))
   
   ;; gets start index for queue it is stored in index 0
   ;; if top? if false then an element will be removed from queue so we should update current-start index.
   ;; else top? true then just return value at the start index.
-  (define queue-start
+  (define queue-front
     (lambda (array top?)
-      (if (top?)
-          (read-array array (+ 2 (queue-start-index array)))
-          (let ((current-start (+ 2 (queue-start-index array))))
-            (update-array array 0 (+ 2 (modulo (+ current-start 1) 1000)))
-            (current-start))
+      (if top?
+          (+ 2 (queue-front-index array))
+          (let ((current-start (queue-front-index array)))
+            (begin (update-array array 0 (num-val (modulo (+ current-start 1) 1000)))
+                   (+ 2 current-start)))
       )))
 
   ;; gets end index for queue it is stored in index 1
   ;; if bot? if false then new element will be added to queue so we should update current-end index.
   ;; else bot? true then just return value at the end index. 
-  (define queue-end
+  (define queue-tail
     (lambda (array bot?)
-      (if (bot?)
-          (read-array array (+ 2 (queue-end-index array)))
-          (let ((current-end (+ 2 (queue-end-index array))))
-            (update-array array 1 (+ 2 (modulo (+ current-end 1) 1000)))
-            (current-end))
+      (if bot?
+          (+ 2 (queue-tail-index array))
+          (let ((current-tail (queue-tail-index array)))
+            (begin (update-array array 1 (num-val (modulo (+ current-tail 1) 1000)))
+                   (+ 2 current-tail)))
       )))
   
   ;; returns size of a queue
   (define queue-size
     (lambda (array)
-      (let ((start-index ((queue-start-index array)))
-            (end-index ((queue-end-index array))))
-        (if (< end-index start-index)
-            (- 1000 (+ end-index 1))
-            (- end-index start-index)))))
+      (let ((front-index (queue-front-index array))
+            (tail-index (queue-tail-index array)))
+        (if (< tail-index front-index)
+            (- 1000 (+ tail-index 1))
+            (- tail-index front-index)))))
                          
   ;; checks whether a queue is empty or not
   ;; if 0 (start index) and 1 (end index) indexes are equals then queue is empty else it is not. 
   (define queue-empty?
     (lambda (array)
-      (= (queue-start array #t) (queue-end array #t))))
+      (let ((front-index (queue-front-index array))
+            (tail-index (queue-tail-index array)))
+        (= front-index tail-index))))
 
   ;; prints elements of a queue
   (define queue-print
     (lambda (array)
-      (let ((start-index ((queue-start-index array)))
-            (end-index ((queue-end-index array))))
-        (queue-print-helper array start-index end-index))))
+      (let ((front-index ((queue-front-index array)))
+            (tail-index ((queue-tail-index array))))
+        (queue-print-helper array front-index tail-index))))
 
   ;; helper function for queue-print
   (define queue-print-helper
-    (lambda (array start-index end-index)
-      (if (= (modulo start-index 1000) end-index)
-          (display (read-array array start-index))
-          (begin (display (read-array array start-index))
-                 (queue-print-helper array (+ start-index 1) end-index)))))
+    (lambda (array front-index tail-index)
+      (if (= (modulo front-index 1000) tail-index)
+          (display (expval->num (read-array array front-index)))
+          (begin (display (expval->num (read-array array front-index)))
+                 (queue-print-helper array (+ front-index 1) tail-index)))))
   
   ;; define helper procedures for stack
   
@@ -324,7 +331,8 @@
 
   ;; checks stack empty or not
   (define stack-empty?
-    (lambda (array) (= (expval->num (read-array array 0)) 0)))
+    (lambda (array)
+      (= (expval->num (read-array array 0)) 0)))
 
   ;; prints element of stack
   (define stack-print
