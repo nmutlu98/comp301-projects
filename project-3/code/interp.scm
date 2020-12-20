@@ -145,47 +145,130 @@
 
         ; create new stack with size of 1001
         (newstack-exp ()
-            (array-val (make-array 1001 (num-val 0))))
+                      (array-val (make-array 1000 (num-val 0))))
 
         ;; push an element to stack
-        (stackpush-exp (exp1 exp2) (let ((stack (expval->array (value-of exp1 env)))) ; get array for stack
-                                     (let ((value (value-of exp2 env))                ; get value to insert
-                                           (index (stack-top stack 0)))               ; get top empty index for stack
-                                       (update-array stack index value)               ; update array with top index equals to value
-                                       (num-val 42))))                                ; return dummy val.
+        (stackpush-exp (exp1 exp2)
+                       (let ((stack (expval->array (value-of exp1 env)))) ; get array for stack
+                         (let ((value (value-of exp2 env))                ; get value to insert
+                               (index (stack-top stack 0)))               ; get top empty index for stack
+                           (update-array stack index value)               ; update array with top index equals to value
+                           (num-val 42))))                                ; return dummy val.
 
         ;; pop and element from stack and returns value of element
-        (stackpop-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))       ; get array for stack
-                               (let ((index (- (stack-top stack 0) 1)))               ; get top-1 index for stack
-                                 (let ((removed-val (read-array stack index)))        ; get removed value to return
-                                   (update-array stack index (num-val 0))             ; update array with top-1 index equals to -1
-                                   removed-val))))                                    ; return removed value.
+        (stackpop-exp (exp1)
+                      (let ((stack (expval->array (value-of exp1 env))))  ; get array for stack
+                        (let ((index (- (stack-top stack 0) 1)))          ; get top-1 index for stack
+                          (if (stack-empty? stack)
+                              (num-val -1)
+                              (let ((removed-val (read-array stack index)))   ; get removed value to return
+                                (update-array stack index (num-val 0))        ; update array with top-1 index equals to -1
+                                removed-val)))))                              ; return removed value.
 
         ;; return size of stack
-        (stacksize-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
-                                (num-val (stack-size stack 0))))
+        (stacksize-exp (exp1)
+                       (let ((stack (expval->array (value-of exp1 env))))
+                         (num-val (stack-size stack 0))))
 
         ;; return top element of stack
-        (stacktop-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
-                               (let ((index (- (stack-top stack 0) 1)))
-                                 (read-array stack index))))
+        (stacktop-exp (exp1)
+                      (let ((stack (expval->array (value-of exp1 env))))
+                        (let ((index (- (stack-top stack 0) 1)))
+                          (read-array stack index))))
 
         ;; check whether stack is empty
-        (stackempty-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
-                                 (bool-val (stack-empty? stack))))
+        (stackempty-exp (exp1)
+                        (let ((stack (expval->array (value-of exp1 env))))
+                          (bool-val (stack-empty? stack))))
 
         ;; print stack elements
-        (stackprint-exp (exp1) (let ((stack (expval->array (value-of exp1 env))))
-                                 (stack-print stack)
-                                 (num-val 42)))
+        (stackprint-exp (exp1)
+                        (let ((stack (expval->array (value-of exp1 env))))
+                          (stack-print stack)
+                          (num-val 42)))
 
         ;; queue operations
-        
-                 
+
+        ;; create an empty queue
+        ;; create an array with size 1002 the indexes 0 and 1 
+        ;; will keep the start and end indexes of queue
+        (newqueue-exp ()
+                      (array-val (make-array 1002 (num-val 0))))
+
+        ;; push an element to queue
+        (queuepush-exp (exp1 exp2)
+                       (let ((queue (expval->array (value-of exp1 env))))
+                         (let ((value (value-of exp2 env))
+                               (index (queue-end queue #f)))
+                           (update-array queue index value)
+                           (num-val 42))))
+
+        ;; pop and element from queue
+        (queuepop-exp (exp1)
+                      (let ((queue (expval->array (value-of exp1 env))))
+                        (let ((index ((queue-start queue #f))))
+                          (if (queue-empty? queue)
+                              (num-val -1)
+                              (let ((removed-value (read-array queue index)))
+                                (update-array queue index (num-val 0))
+                                removed-value)))))
+
+        ;; get size of queue
+        (queuesize-exp (exp1)
+                       (let ((queue (expval->array (value-of exp1 env))))
+                         (num-val (queue-size queue))))
+
+        ;; get top element of queue
+        (queuetop-exp (exp1)
+                      (let ((queue (expval->array (value-of exp1 env))))
+                        (let ((index (queue-start queue #t)))
+                          (read-array queue index))))
+
+        ;; check whether queue is empty
+        (queueempty-exp (exp1)
+                        (let ((queue (expval->array (value-of exp1 env))))
+                          (bool-val (queue-empty? queue))))
+
+        ;; print elements of a queue
+        (queueprint-exp (exp1)
+                        (let ((queue (expval->array (value-of exp1 env))))
+                          (queue-print queue)
+                          (num-val 42)))             
         )))
 
-  ;; define helper procedures for stack
+  ;; define helper procedures for queue
 
+  ;; get start index for queue it is stored in index 0
+  ;; if top? if false then an element will be removed from queue so we should update current-start index.
+  ;; else top? true then just return value at the start index.
+  (define queue-start
+    (lambda (array top?)
+      (if (top?)
+          (read-array array (+ 2 (read-array array 0)))
+          (let ((current-start (+ 2 (read-array array 0))))
+            (update-array array 0 (+ 2(% (+ current-start 1) 1000)))
+            (current-start))
+      )))
+
+  ;; get end index for queue it is stored in index 1
+  ;; if bot? if false then new element will be added to queue so we should update current-end index.
+  ;; else bot? true then just return value at the end index. 
+  (define queue-end
+    (lambda (array bot?)
+      (if (bot?)
+          (read-array array (+ 2 (read-array 1)))
+          (let ((current-end (+2 (read-array array 1))))
+            (update-array array 1 (+ 2 (% (+ current-end 1) 1000)))
+            (current-end))
+      )))
+
+  ;; TODO
+  ;; queue-empty?
+  ;; queue-print
+  
+
+  ;; define helper procedures for stack
+  
   ;; return top element of stack
   (define stack-top
     (lambda (array index)
@@ -211,7 +294,7 @@
           (display "")
           (begin (display (expval->num (read-array array index)))
                  (stack-print array (+ index 1))))))
-          
+           
   ;; apply-procedure : Proc * ExpVal -> ExpVal
   ;; 
   ;; uninstrumented version

@@ -119,12 +119,35 @@
         ("print-stack" "(" expression ")") stackprint-exp)
 
       ;; queue expressions
-    
 
-      
-      
-      
- 
+      ;; syntax -> newqueue()
+      (expression
+        ("newqueue" "(" ")") newqueue-exp)
+
+      ;; syntax -> queue-push(queue, value)
+      (expression
+        ("queue-push" "(" expression "," expression ")") queuepush-exp)
+
+      ;; syntax -> queue-pop(queue)
+      (expression
+        ("queue-pop" "(" expression ")") queuepop-exp)
+
+      ;; syntax -> queue-size(queue)
+      (expression
+        ("queue-size" "(" expression ")") queuesize-exp)
+
+      ;; syntax -> queue-top(queue)
+      (expression
+        ("queue-top" "(" expression ")") queuetop-exp)
+
+      ;; syntax -> empty-queue?(queue)
+      (expression
+        ("empty-queue?" "(" expression ")") queueempty-exp)
+
+      ;; syntax -> print-queue(queue)
+      (expression
+        ("print-queue" "(" expression ")") queueprint-exp)
+
       ))
 
   ;;;;;;;;;;;;;;;; sllgen boilerplate ;;;;;;;;;;;;;;;;
