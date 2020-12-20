@@ -238,35 +238,74 @@
 
   ;; define helper procedures for queue
 
-  ;; get start index for queue it is stored in index 0
+  ;; returns start index for a queue
+  ;; in our design we stored start index always in 0 index of array
+  ;; we updated when we push or pop elements 
+  (define queue-start-index
+    (lambda (array)
+      (read-array array 0)))
+
+  ;; returns end index for a queue
+  ;; in our design we stored end index always in 1 index of array
+  ;; we updated when we push or pop elements 
+  (define queue-end-index
+    (lambda (array)
+      (read-array array 1)))
+  
+  ;; gets start index for queue it is stored in index 0
   ;; if top? if false then an element will be removed from queue so we should update current-start index.
   ;; else top? true then just return value at the start index.
   (define queue-start
     (lambda (array top?)
       (if (top?)
-          (read-array array (+ 2 (read-array array 0)))
-          (let ((current-start (+ 2 (read-array array 0))))
-            (update-array array 0 (+ 2(% (+ current-start 1) 1000)))
+          (read-array array (+ 2 (queue-start-index array)))
+          (let ((current-start (+ 2 (queue-start-index array))))
+            (update-array array 0 (+ 2 (modulo (+ current-start 1) 1000)))
             (current-start))
       )))
 
-  ;; get end index for queue it is stored in index 1
+  ;; gets end index for queue it is stored in index 1
   ;; if bot? if false then new element will be added to queue so we should update current-end index.
   ;; else bot? true then just return value at the end index. 
   (define queue-end
     (lambda (array bot?)
       (if (bot?)
-          (read-array array (+ 2 (read-array 1)))
-          (let ((current-end (+2 (read-array array 1))))
-            (update-array array 1 (+ 2 (% (+ current-end 1) 1000)))
+          (read-array array (+ 2 (queue-end-index array)))
+          (let ((current-end (+ 2 (queue-end-index array))))
+            (update-array array 1 (+ 2 (modulo (+ current-end 1) 1000)))
             (current-end))
       )))
-
-  ;; TODO
-  ;; queue-empty?
-  ;; queue-print
   
+  ;; returns size of a queue
+  (define queue-size
+    (lambda (array)
+      (let ((start-index ((queue-start-index array)))
+            (end-index ((queue-end-index array))))
+        (if (< end-index start-index)
+            (- 1000 (+ end-index 1))
+            (- end-index start-index)))))
+                         
+  ;; checks whether a queue is empty or not
+  ;; if 0 (start index) and 1 (end index) indexes are equals then queue is empty else it is not. 
+  (define queue-empty?
+    (lambda (array)
+      (= (queue-start array #t) (queue-end array #t))))
 
+  ;; prints elements of a queue
+  (define queue-print
+    (lambda (array)
+      (let ((start-index ((queue-start-index array)))
+            (end-index ((queue-end-index array))))
+        (queue-print-helper array start-index end-index))))
+
+  ;; helper function for queue-print
+  (define queue-print-helper
+    (lambda (array start-index end-index)
+      (if (= (modulo start-index 1000) end-index)
+          (display (read-array array start-index))
+          (begin (display (read-array array start-index))
+                 (queue-print-helper array (+ start-index 1) end-index)))))
+  
   ;; define helper procedures for stack
   
   ;; return top element of stack
