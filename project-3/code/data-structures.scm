@@ -9,6 +9,9 @@
 
 ;;; an expressed value is either a number, a boolean, a procval, or a
 ;;; reference.
+
+  ;; ref-val?: expval -> boolean
+  ;; usage: if expval is a ref-val, it returns true. Otherwise it returns false.
   (define ref-val?
     (lambda (exp)
       (cases expval exp
