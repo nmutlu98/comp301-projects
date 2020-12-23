@@ -160,7 +160,7 @@
         
         (print-queue-exp (q)
                      (let ((queue (expval->arr (value-of q env))))
-                       (helper-print-queue queue)))
+                       (helper-print-array queue)))
 
         (newstack-exp ()
                       (value-of (newarray-exp 1001 -1) env))
@@ -196,7 +196,7 @@
 
         (print-stack-exp (s)
                          (let ((stack (expval->arr (value-of s env))))
-                           (helper-print-stack stack)))
+                           (helper-print-array stack)))
         
         
         )))
@@ -260,10 +260,10 @@
       (let ((size (array-size arr)))
         (helper 0 size))))
       
-  ; helper-print-queue: (list-of ref-val) -> returns nothing
+  ; helper-print-array: (list-of ref-val) -> returns nothing
   ; usage: used to traverse all the elements in the queue and make a string from those elements seperated by spaces. Then prints the string with display.
   
-  (define helper-print-queue
+  (define helper-print-array
     (lambda (arr)
       (define helper
         (lambda (lst remaining-arr)
@@ -277,25 +277,12 @@
   
   (define helper-empty-array
     (lambda (arr)
-      (define helper
-        (lambda (remaining-array indicator)
-          (cond ((null? remaining-array) indicator)
-                ((eq? (expval->num (deref (expval->ref (car remaining-array)))) -1) (helper (cdr remaining-array) indicator))
-                ((> (expval->num (deref (expval->ref (car remaining-array)))) 0) #f))))
-      (helper arr #t)))
+          (cond ((null? arr) #t)
+                ((eq? (expval->num (deref (expval->ref (car arr)))) -1) (helper-empty-array (cdr arr)))
+                ((> (expval->num (deref (expval->ref (car arr)))) 0) #f))))
+     
   
-; helper-print-stack: (list-of ref-val) -> returns nothing
-; usage: used to traverse all the elements in the stack and make a string from those elements seperated by space, it reverses the string. Then prints the string with display.
-  
-  (define helper-print-stack
-    (lambda (arr)
-      (define helper
-        (lambda (lst remaining-arr)
-          (if (helper-empty-array remaining-arr)
-              (map number->string (reverse lst))
-              (helper (append lst (list (expval->num (deref (expval->ref (car remaining-arr)))))) (cdr remaining-arr)))))
-      (display (helper '() arr))))
-          
+
     
 
 
