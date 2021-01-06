@@ -53,26 +53,15 @@
 
         ;;;; TASK 4 ;;;;;;;;;
         ; Implement car expression case here
-       (car-exp (exp)
-                (value-of/k exp env
-                            (car-cont cont)))
-                
+       
         ; Implement cdr expression case here
-       (cdr-exp (exp)
-                (value-of/k exp env
-                            (cdr-cont cont)))
+       
         ; Implement null? expression case here
-       (null?-exp (exp)
-                  (value-of/k exp env
-                              (null?-cont cont)))
+      
         ; Implement emptylist expression case here
-       (emptylist-exp ()
-                      (apply-cont cont (emptylist-val)))
+       
         ; Implement your list expression case here
-        (list-exp (exps)
-              (if (null? exps)
-                  (apply-cont cont (emptylist-val))
-                  (value-of/k (car (reverse exps)) env (list-cont '() (cdr (reverse exps)) env cont))))
+    
         ; Implement the map expression case here        
         
         ;;;;;;;;;;;;;;;;;;;;;;
@@ -116,32 +105,19 @@
 
         ;;;;;;;;;;;;;;;;;;;;;;; TASK 5 ;;;;;;;;;;;;;;;;;;;;;;;;
         ; implement "car-cont" continuation here
-        (car-cont (saved-cont)
-                  (apply-cont saved-cont (expval->car val)))
-        ; implement "cdr-cont" continuation here
-       (cdr-cont (saved-cont)
-                 (apply-cont saved-cont (expval->cdr val)))
-        ; implement "null?-cont" continuation here
-       (null?-cont (saved-cont)
-                   (apply-cont saved-cont (bool-val (expval->null? val))))
         
+        ; implement "cdr-cont" continuation here
+       
+        ; implement "null?-cont" continuation here
+       
         ; implement continuation for list-exp here.
         ; hint: you will need to call value-of/k recursively, by passing this continuation as cont to value-of/k.
-        (list-cont (vals remainings saved-env saved-cont)
-                   (if (null? remainings)
-                       (apply-cont saved-cont (pair-val val (get-list vals)))
-                       (value-of/k (car remainings) saved-env (list-cont (cons val vals) (cdr remainings) saved-env saved-cont))))
+    
         ; implement map-exp continuation(s) here. you will notice that one continuation will not be enough.
         
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         
         )))
-      
-  (define get-list
-    (lambda (values)
-      (if (null? values)
-          (emptylist-val)
-          (pair-val (car values) (get-list (cdr values))))))
 
   ;; apply-procedure/k : Proc * ExpVal * Cont -> FinalAnswer
   ;; Page 152 and 155

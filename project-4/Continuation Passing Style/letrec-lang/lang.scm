@@ -56,16 +56,28 @@
         letrec-exp)
 
       ;;;;;;;; TASK 4: LISTS ;;;;;;;
-      ; implement car(expression)      
-
+      ; implement car(expression)
+      
+      (expression ("car" "(" expression ")") car-exp)
+     
       ; implement cdr(expression)      
 
+      (expression ("cdr" "(" expression ")") cdr-exp)
+      
       ; implement null?(expression)      
 
-      ; implement emptylist      
-
+      (expression ("null?" "(" expression ")") null?-exp)
+      
+      ; implement emptylist
+      
+      (expression ("emptylist") emptylist-exp)
+      
       ; implement list(exp1, exp2, ..., expN)
       ; hint: use seperate-list function of scheme.
+
+      (expression
+       ("list" "(" (separated-list expression ",") ")")
+       list-exp)
       
       ; implement map(expression, expression)
       ; the first expression should be treated as a proc expression with one parameter.

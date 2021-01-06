@@ -17,9 +17,10 @@
       (proc proc?))
     ;;;;;;;;;;;;;;;;;;;;;;; TASK 5 ;;;;;;;;;;;;;;;;;;;;;;;
     ; implement an emptylist value expval
-
+    (emptylist-val)
     ; implement a pair value expval
-    
+    (pair-val (first expval?)
+              (remaining expval?))
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     )
 
@@ -50,11 +51,23 @@
 
   ;;;;;;;;;;;;;;;;;;;;;;; TASK 5 ;;;;;;;;;;;;;;;;;;;;;;;
   ;; implement expval->car
-
+  (define expval->car
+    (lambda (v)
+      (cases expval v
+        (pair-val (first remaining) first)
+        (else (expval-extractor-error 'car v)))))
   ;; implement expval->cdr
-  
+  (define expval->cdr
+    (lambda (v)
+      (cases expval v
+        (pair-val (first remaining) remaining)
+        (else (expval-extractor-error 'cdr v)))))
   ;; implement expval->null?
-  
+  (define expval->null?
+    (lambda (v)
+      (cases expval v
+        (emptylist-val () #t)
+        (else #f))))
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   
 ;;;;;;;;;;;;;;;; continuations ;;;;;;;;;;;;;;;;
@@ -92,18 +105,29 @@
       (saved-cont continuation?))
     ;;;;;;;;;;;;; TASK 4: LIST ;;;;;;;;;;;;;;;;;;
     ; implement continuation datatype for car expression
-
+   (car-cont
+    (saved-cont continuation?))
     ; implement continuation datatype for cdr expression
-
+   (cdr-cont
+    (saved-cont continuation?))
     ; implement continuation datatype for null? expression
-
+   (null?-cont
+    (saved-cont continuation?))
     ; implement continuation datatype for your list expression
-
+   (list-cont
+    (vals list-cont-list?)
+    (remainings list-cont-list?)
+    (saved-env environment?)
+    (saved-cont continuation?))
     ; implement continuation datatype(s) for your map expression
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     )
+  
+  (define list-cont-list?
+    (lambda (vals)
+      (or (null? vals) (pair? vals))))
 
 ;;;;;;;;;;;;;;;; procedures ;;;;;;;;;;;;;;;;
 
