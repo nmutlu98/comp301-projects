@@ -120,7 +120,20 @@
     (saved-env environment?)
     (saved-cont continuation?))
     ; implement continuation datatype(s) for your map expression
-    
+    (map1-cont
+     (lst expression?)
+     (saved-env environment?)
+     (saved-cont continuation?))
+    (map2-cont
+     (proc expval?)
+     (saved-env environment?)
+     (saved-cont continuation?))
+    (map3-cont
+     (res list-cont-list?)
+     (remainings expval?)
+     (proc expval?)
+     (saved-env environment?)
+     (saved-cont continuation?))
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     )

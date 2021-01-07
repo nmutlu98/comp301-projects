@@ -73,8 +73,10 @@
               (if (null? exps)
                   (apply-cont cont (emptylist-val))
                   (value-of/k (car (reverse exps)) env (list-cont '() (cdr (reverse exps)) env cont))))
+    
         ; Implement the map expression case here        
-        
+        (map-exp (proc-exp lst-exp)
+                 (value-of/k proc-exp env (map1-cont lst-exp env cont)))
         ;;;;;;;;;;;;;;;;;;;;;;
    )))
 
@@ -132,16 +134,30 @@
                        (apply-cont saved-cont (pair-val val (get-list vals)))
                        (value-of/k (car remainings) saved-env (list-cont (cons val vals) (cdr remainings) saved-env saved-cont))))
         ; implement map-exp continuation(s) here. you will notice that one continuation will not be enough.
-        
+        (map1-cont (lst saved-env saved-cont)
+                   (value-of/k lst saved-env (map2-cont val saved-env saved-cont)))
+        (map2-cont (proc saved-env saved-cont)
+                   (if (expval->null? val)
+                       val
+                       (apply-procedure/k (expval->proc proc) (expval->car val) (map3-cont '() (expval->cdr val) proc saved-env saved-cont))))
+        (map3-cont (res remainings proc saved-env saved-cont)
+                   (if (expval->null? remainings)
+                       (let ((result (reverse(cons val res))))
+                         (apply-cont saved-cont (get-list result)))
+                        (apply-procedure/k (expval->proc proc) (expval->car remainings) (map3-cont (cons val res) (expval->cdr remainings) proc saved-env saved-cont))))
+                     
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         
         )))
-      
+
+  
   (define get-list
     (lambda (values)
       (if (null? values)
           (emptylist-val)
           (pair-val (car values) (get-list (cdr values))))))
+  
+  
 
   ;; apply-procedure/k : Proc * ExpVal * Cont -> FinalAnswer
   ;; Page 152 and 155
